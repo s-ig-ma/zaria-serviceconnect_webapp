@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getCategories, getProviders, searchProviders } from "../../api/providers";
 import { Layout } from "../../components/Layout";
 import { ProviderCard } from "../../components/ProviderCard";
+import { loadBrowserLocation } from "../../lib/location";
 
 export function ProvidersPage({ session, onNavigate, onLogout, searchParams }) {
   const initialCategory = searchParams.get("category") || "";
@@ -11,9 +12,14 @@ export function ProvidersPage({ session, onNavigate, onLogout, searchParams }) {
   const [error, setError] = useState("");
   const [categoryId, setCategoryId] = useState(initialCategory);
   const [query, setQuery] = useState("");
+  const [userLocation, setUserLocation] = useState(null);
 
   useEffect(() => {
     getCategories().then(setCategories).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    loadBrowserLocation().then(setUserLocation);
   }, []);
 
   useEffect(() => {
@@ -23,8 +29,16 @@ export function ProvidersPage({ session, onNavigate, onLogout, searchParams }) {
         setError("");
 
         const data = query.trim()
-          ? await searchProviders({ query: query.trim() })
-          : await getProviders({ categoryId: categoryId ? Number(categoryId) : null });
+          ? await searchProviders({
+              query: query.trim(),
+              userLat: userLocation?.latitude,
+              userLon: userLocation?.longitude
+            })
+          : await getProviders({
+              categoryId: categoryId ? Number(categoryId) : null,
+              userLat: userLocation?.latitude,
+              userLon: userLocation?.longitude
+            });
 
         setProviders(data);
       } catch (err) {
@@ -35,7 +49,7 @@ export function ProvidersPage({ session, onNavigate, onLogout, searchParams }) {
     }
 
     loadProviders();
-  }, [categoryId, query]);
+  }, [categoryId, query, userLocation]);
 
   return (
     <Layout

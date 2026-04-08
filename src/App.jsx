@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { getMyProfile } from "./api/auth";
 import { ProtectedRoute } from "./components/ProtectedRoute";
-import { clearSession, getSession } from "./lib/session";
+import { clearSession, getSession, saveSession } from "./lib/session";
 import { LandingPage } from "./pages/LandingPage";
 import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
@@ -10,8 +10,10 @@ import { ProviderProfilePage } from "./pages/resident/ProviderProfilePage";
 import { ProvidersPage } from "./pages/resident/ProvidersPage";
 import { ResidentBookingsPage } from "./pages/resident/ResidentBookingsPage";
 import { ResidentHomePage } from "./pages/resident/ResidentHomePage";
+import { ResidentProfilePage } from "./pages/resident/ResidentProfilePage";
 import { ProviderDashboardPage } from "./pages/provider/ProviderDashboardPage";
 import { ProviderHistoryPage } from "./pages/provider/ProviderHistoryPage";
+import { ProviderProfileSettingsPage } from "./pages/provider/ProviderProfileSettingsPage";
 import { ProviderRequestsPage } from "./pages/provider/ProviderRequestsPage";
 
 function getCurrentLocation() {
@@ -72,6 +74,11 @@ export default function App() {
     clearSession();
     setSession(null);
     navigate("/login");
+  }
+
+  function handleSessionUpdate(nextSession) {
+    saveSession(nextSession);
+    setSession(nextSession);
   }
 
   const page = useMemo(() => {
@@ -149,6 +156,19 @@ export default function App() {
       );
     }
 
+    if (pathname === "/resident/profile") {
+      return (
+        <ProtectedRoute session={session} role="resident" onRedirect={navigate}>
+          <ResidentProfilePage
+            session={session}
+            onNavigate={navigate}
+            onLogout={logout}
+            onSessionUpdate={handleSessionUpdate}
+          />
+        </ProtectedRoute>
+      );
+    }
+
     if (pathname === "/provider") {
       return (
         <ProtectedRoute session={session} role="provider" onRedirect={navigate}>
@@ -169,6 +189,19 @@ export default function App() {
       return (
         <ProtectedRoute session={session} role="provider" onRedirect={navigate}>
           <ProviderHistoryPage session={session} onNavigate={navigate} onLogout={logout} />
+        </ProtectedRoute>
+      );
+    }
+
+    if (pathname === "/provider/profile") {
+      return (
+        <ProtectedRoute session={session} role="provider" onRedirect={navigate}>
+          <ProviderProfileSettingsPage
+            session={session}
+            onNavigate={navigate}
+            onLogout={logout}
+            onSessionUpdate={handleSessionUpdate}
+          />
         </ProtectedRoute>
       );
     }

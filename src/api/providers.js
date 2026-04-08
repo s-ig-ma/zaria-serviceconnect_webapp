@@ -44,3 +44,23 @@ export function getProviderById(providerId) {
 export function getMyProviderProfile() {
   return request("/providers/me/profile");
 }
+
+export function updateMyProviderProfile(payload) {
+  const formData = new FormData();
+
+  Object.entries(payload).forEach(([key, value]) => {
+    if (value == null) {
+      return;
+    }
+    if (value instanceof File) {
+      formData.append(key, value);
+      return;
+    }
+    formData.append(key, String(value));
+  });
+
+  return request("/providers/me/profile", {
+    method: "PATCH",
+    body: formData
+  });
+}

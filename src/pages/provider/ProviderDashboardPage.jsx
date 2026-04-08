@@ -36,7 +36,7 @@ export function ProviderDashboardPage({ session, onNavigate, onLogout }) {
   const stats = useMemo(
     () => ({
       pending: bookings.filter((booking) => booking.status === "pending").length,
-      accepted: bookings.filter((booking) => booking.status === "accepted").length,
+      accepted: bookings.filter((booking) => ["accepted", "completion_requested"].includes(booking.status)).length,
       completed: bookings.filter((booking) => booking.status === "completed").length
     }),
     [bookings]
@@ -82,6 +82,8 @@ export function ProviderDashboardPage({ session, onNavigate, onLogout }) {
               <p><strong>Email:</strong> {profile.user?.email}</p>
               <p><strong>Phone:</strong> <a href={`tel:${profile.user?.phone}`}>{profile.user?.phone}</a></p>
               <p><strong>Location:</strong> {profile.location || "Not set"}</p>
+              <p><strong>Shop in Zaria:</strong> {profile.has_shop_in_zaria ? "Yes" : "No"}</p>
+              <p><strong>Shop Address:</strong> {profile.shop_address || "Not set"}</p>
               <p><strong>Experience:</strong> {profile.years_of_experience} years</p>
               <p><strong>Description:</strong> {profile.description || "No description yet."}</p>
             </div>

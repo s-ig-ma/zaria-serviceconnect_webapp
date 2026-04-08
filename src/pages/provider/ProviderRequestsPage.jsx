@@ -27,7 +27,10 @@ export function ProviderRequestsPage({ session, onNavigate, onLogout }) {
   }, []);
 
   const requestBookings = useMemo(
-    () => bookings.filter((booking) => booking.status === "pending" || booking.status === "accepted"),
+    () =>
+      bookings.filter((booking) =>
+        ["pending", "accepted", "completion_requested"].includes(booking.status)
+      ),
     [bookings]
   );
 
@@ -70,6 +73,7 @@ export function ProviderRequestsPage({ session, onNavigate, onLogout }) {
               <div className="detail-list">
                 <p><strong>Booking ID:</strong> #{booking.id}</p>
                 <p><strong>Service Request:</strong> {booking.service_description}</p>
+                <p><strong>Service Address:</strong> {booking.service_address || "No address saved."}</p>
                 <p><strong>Resident Note:</strong> {booking.notes || "No note added."}</p>
                 <p><strong>Phone:</strong> <a href={`tel:${booking.resident?.phone}`}>{booking.resident?.phone}</a></p>
               </div>
@@ -87,11 +91,15 @@ export function ProviderRequestsPage({ session, onNavigate, onLogout }) {
                 ) : null}
 
                 {booking.status === "accepted" ? (
-                  <button className="primary-button" onClick={() => handleStatusChange(booking.id, "completed")}>
-                    Mark Completed
+                  <button className="primary-button" onClick={() => handleStatusChange(booking.id, "completion_requested")}>
+                    Request Completion
                   </button>
                 ) : null}
               </div>
+
+              {booking.status === "completion_requested" ? (
+                <p className="helper-text">Waiting for the resident to confirm satisfaction.</p>
+              ) : null}
             </article>
           ))}
         </div>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { createBooking } from "../../api/bookings";
 import { getProviderById } from "../../api/providers";
+import { getMyUserProfile } from "../../api/users";
 import { Layout } from "../../components/Layout";
 import { getDisplayServiceName } from "../../lib/utils";
 
@@ -10,6 +11,7 @@ export function BookingPage({ session, providerId, onNavigate, onLogout }) {
     service_description: "",
     scheduled_date: "",
     scheduled_time: "",
+    service_address: "",
     notes: ""
   });
   const [loading, setLoading] = useState(true);
@@ -21,7 +23,15 @@ export function BookingPage({ session, providerId, onNavigate, onLogout }) {
     async function loadProvider() {
       try {
         setLoading(true);
-        setProvider(await getProviderById(providerId));
+        const [providerData, userProfile] = await Promise.all([
+          getProviderById(providerId),
+          getMyUserProfile().catch(() => null)
+        ]);
+        setProvider(providerData);
+        setForm((current) => ({
+          ...current,
+          service_address: userProfile?.home_address || current.service_address || ""
+        }));
       } catch (err) {
         setError(err.message);
       } finally {
@@ -42,6 +52,7 @@ export function BookingPage({ session, providerId, onNavigate, onLogout }) {
       const response = await createBooking({
         provider_id: Number(providerId),
         ...form,
+        service_address: form.service_address.trim(),
         notes: form.notes.trim() || null
       });
       setMessage(`Booking #${response.id} created successfully.`);
@@ -49,6 +60,7 @@ export function BookingPage({ session, providerId, onNavigate, onLogout }) {
         service_description: "",
         scheduled_date: "",
         scheduled_time: "",
+        service_address: "",
         notes: ""
       });
     } catch (err) {
@@ -75,6 +87,7 @@ export function BookingPage({ session, providerId, onNavigate, onLogout }) {
               <h2>{provider.user?.name}</h2>
               <p>{getDisplayServiceName(provider)}</p>
               <p className="muted">{provider.location || "Location not set"}</p>
+              <p className="muted">Availability: {provider.availability_status || "available"}</p>
               <a className="inline-link" href={`tel:${provider.user?.phone}`}>
                 Call: {provider.user?.phone}
               </a>
@@ -112,6 +125,16 @@ export function BookingPage({ session, providerId, onNavigate, onLogout }) {
               type="time"
               value={form.scheduled_time}
               onChange={(event) => setForm({ ...form, scheduled_time: event.target.value })}
+            />
+          </label>
+
+          <label>
+            Home Address for This Booking
+            <textarea
+              rows="3"
+              value={form.service_address}
+              onChange={(event) => setForm({ ...form, service_address: event.target.value })}
+              placeholder="This auto-fills from your profile, but you can change it for this booking"
             />
           </label>
 

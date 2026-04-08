@@ -62,6 +62,18 @@ export function ResidentBookingsPage({ session, onNavigate, onLogout }) {
     }
   }
 
+  async function handleConfirmCompletion(bookingId) {
+    try {
+      setMessage("");
+      setError("");
+      await updateBookingStatus(bookingId, { status: "completed" });
+      setMessage("Job marked as completed successfully.");
+      await loadData();
+    } catch (err) {
+      setError(err.message);
+    }
+  }
+
   async function handleSubmitReview(booking) {
     const reviewState = activeReview[booking.id] || { rating: 5, comment: "" };
 
@@ -135,6 +147,7 @@ export function ResidentBookingsPage({ session, onNavigate, onLogout }) {
                   <p><strong>Booking ID:</strong> #{booking.id}</p>
                   <p><strong>Schedule:</strong> {formatDateTime(booking.scheduled_date, booking.scheduled_time)}</p>
                   <p><strong>Description:</strong> {booking.service_description}</p>
+                  <p><strong>Service Address:</strong> {booking.service_address || "No address saved."}</p>
                   <p><strong>Notes:</strong> {booking.notes || "No note added."}</p>
                   <p><strong>Provider Note:</strong> {booking.provider_notes || "No provider note yet."}</p>
                   <p><strong>Call:</strong> <a href={`tel:${provider?.user?.phone}`}>{provider?.user?.phone}</a></p>
@@ -144,6 +157,12 @@ export function ResidentBookingsPage({ session, onNavigate, onLogout }) {
                   {booking.status === "pending" ? (
                     <button className="ghost-button danger" onClick={() => handleCancelBooking(booking.id)}>
                       Cancel Booking
+                    </button>
+                  ) : null}
+
+                  {booking.status === "completion_requested" ? (
+                    <button className="primary-button" onClick={() => handleConfirmCompletion(booking.id)}>
+                      Confirm Satisfaction
                     </button>
                   ) : null}
 
@@ -178,6 +197,9 @@ export function ResidentBookingsPage({ session, onNavigate, onLogout }) {
 
                 {alreadyReviewed ? <p className="helper-text">Review already submitted for this booking.</p> : null}
                 {alreadyComplained ? <p className="helper-text">Complaint already submitted for this booking.</p> : null}
+                {booking.status === "completion_requested" ? (
+                  <p className="helper-text">The provider has requested completion. Confirm only if you are satisfied.</p>
+                ) : null}
 
                 {reviewForm.open ? (
                   <div className="inline-form">

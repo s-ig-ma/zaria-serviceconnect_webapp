@@ -382,6 +382,28 @@ textarea {
   font-size: 1.4rem;
 }
 
+.avatar-image {
+  object-fit: cover;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.checkbox-row input {
+  width: auto;
+}
+
+.profile-photo-preview {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: 20px;
+  margin-bottom: 16px;
+}
+
 .status-badge {
   display: inline-flex;
   align-items: center;

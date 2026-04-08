@@ -3,6 +3,7 @@ import { getProviderById } from "../../api/providers";
 import { getProviderReviews } from "../../api/reviews";
 import { Layout } from "../../components/Layout";
 import { StatusBadge } from "../../components/StatusBadge";
+import { getImageUrl } from "../../lib/images";
 import { formatDateLabel, getDisplayServiceName, getInitials } from "../../lib/utils";
 
 export function ProviderProfilePage({ session, providerId, onNavigate, onLogout }) {
@@ -10,6 +11,7 @@ export function ProviderProfilePage({ session, providerId, onNavigate, onLogout 
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const imageUrl = getImageUrl(provider?.user?.profile_photo);
 
   useEffect(() => {
     async function load() {
@@ -47,7 +49,11 @@ export function ProviderProfilePage({ session, providerId, onNavigate, onLogout 
         <section className="panel-grid profile-grid">
           <div className="panel">
             <div className="profile-head">
-              <div className="avatar large">{getInitials(provider.user?.name)}</div>
+              {imageUrl ? (
+                <img className="avatar large avatar-image" src={imageUrl} alt={provider.user?.name || "Provider"} />
+              ) : (
+                <div className="avatar large">{getInitials(provider.user?.name)}</div>
+              )}
               <div>
                 <h2>{provider.user?.name}</h2>
                 <p>{getDisplayServiceName(provider)}</p>

@@ -3,12 +3,14 @@ export function Layout({ session, title, subtitle, onNavigate, onLogout, childre
   const residentLinks = [
     { label: "Home", path: "/resident" },
     { label: "Providers", path: "/resident/providers" },
-    { label: "My Bookings", path: "/resident/bookings" }
+    { label: "My Bookings", path: "/resident/bookings" },
+    { label: "Profile", path: "/resident/profile" }
   ];
   const providerLinks = [
     { label: "Dashboard", path: "/provider" },
     { label: "Requests", path: "/provider/requests" },
-    { label: "History", path: "/provider/history" }
+    { label: "History", path: "/provider/history" },
+    { label: "Profile", path: "/provider/profile" }
   ];
   const links = role === "provider" ? providerLinks : residentLinks;
 

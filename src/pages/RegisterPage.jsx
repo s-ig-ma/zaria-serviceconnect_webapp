@@ -7,7 +7,8 @@ const initialResidentForm = {
   email: "",
   phone: "",
   password: "",
-  location: ""
+  location: "",
+  home_address: ""
 };
 
 const initialProviderForm = {
@@ -20,7 +21,11 @@ const initialProviderForm = {
   service_name: "",
   years_of_experience: 0,
   description: "",
-  id_document: null
+  has_shop_in_zaria: false,
+  shop_address: "",
+  passport_photo: null,
+  id_document: null,
+  skill_proof: null
 };
 
 export function RegisterPage({ onNavigate }) {
@@ -132,12 +137,23 @@ export function RegisterPage({ onNavigate }) {
               </label>
 
               <label>
-                Location
+                Area / Location
                 <input
                   value={residentForm.location}
                   onChange={(event) =>
                     setResidentForm({ ...residentForm, location: event.target.value })
                   }
+                />
+              </label>
+
+              <label className="full-width">
+                Home Address in Zaria
+                <input
+                  value={residentForm.home_address}
+                  onChange={(event) =>
+                    setResidentForm({ ...residentForm, home_address: event.target.value })
+                  }
+                  placeholder="House address the provider can use during bookings"
                 />
               </label>
 
@@ -174,7 +190,7 @@ export function RegisterPage({ onNavigate }) {
           <form onSubmit={handleProviderSubmit}>
             <span className="eyebrow">Provider Registration</span>
             <h1>Create a provider account</h1>
-            <p>Choose a category or add a custom service name, then upload your ID document.</p>
+            <p>Choose a category or add a custom service name, then upload your verification files.</p>
 
             <div className="form-grid">
               <label>
@@ -284,10 +300,24 @@ export function RegisterPage({ onNavigate }) {
               </label>
 
               <label className="full-width">
+                Passport Photograph
+                <input
+                  type="file"
+                  accept=".jpg,.jpeg,.png"
+                  onChange={(event) =>
+                    setProviderForm({
+                      ...providerForm,
+                      passport_photo: event.target.files?.[0] || null
+                    })
+                  }
+                />
+              </label>
+
+              <label className="full-width">
                 ID Document
                 <input
                   type="file"
-                  accept=".jpg,.jpeg,.png,.pdf,.txt"
+                  accept=".jpg,.jpeg,.png,.pdf"
                   onChange={(event) =>
                     setProviderForm({
                       ...providerForm,
@@ -296,6 +326,47 @@ export function RegisterPage({ onNavigate }) {
                   }
                 />
               </label>
+
+              <label className="full-width">
+                Skill Proof / Certificate
+                <input
+                  type="file"
+                  accept=".jpg,.jpeg,.png,.pdf"
+                  onChange={(event) =>
+                    setProviderForm({
+                      ...providerForm,
+                      skill_proof: event.target.files?.[0] || null
+                    })
+                  }
+                />
+              </label>
+
+              <label className="full-width checkbox-row">
+                <input
+                  type="checkbox"
+                  checked={providerForm.has_shop_in_zaria}
+                  onChange={(event) =>
+                    setProviderForm({
+                      ...providerForm,
+                      has_shop_in_zaria: event.target.checked,
+                      shop_address: event.target.checked ? providerForm.shop_address : ""
+                    })
+                  }
+                />
+                <span>I own a shop in Zaria</span>
+              </label>
+
+              {providerForm.has_shop_in_zaria ? (
+                <label className="full-width">
+                  Shop Address in Zaria
+                  <input
+                    value={providerForm.shop_address}
+                    onChange={(event) =>
+                      setProviderForm({ ...providerForm, shop_address: event.target.value })
+                    }
+                  />
+                </label>
+              ) : null}
             </div>
 
             {message ? <div className="message success">{message}</div> : null}
@@ -311,7 +382,10 @@ export function RegisterPage({ onNavigate }) {
                 !providerForm.phone.trim() ||
                 providerForm.password.length < 6 ||
                 (!providerForm.category_id && !providerForm.service_name.trim()) ||
-                !providerForm.id_document
+                !providerForm.passport_photo ||
+                !providerForm.id_document ||
+                !providerForm.skill_proof ||
+                (providerForm.has_shop_in_zaria && !providerForm.shop_address.trim())
               }
             >
               {loading ? "Submitting..." : "Create Provider Account"}

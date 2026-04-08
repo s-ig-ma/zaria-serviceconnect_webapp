@@ -56,6 +56,7 @@ export function ProviderHistoryPage({ session, onNavigate, onLogout }) {
               <div className="detail-list">
                 <p><strong>Booking ID:</strong> #{booking.id}</p>
                 <p><strong>Description:</strong> {booking.service_description}</p>
+                <p><strong>Service Address:</strong> {booking.service_address || "No address saved."}</p>
                 <p><strong>Resident Note:</strong> {booking.notes || "No resident note."}</p>
                 <p><strong>Provider Note:</strong> {booking.provider_notes || "No provider note."}</p>
                 <p><strong>Phone:</strong> <a href={`tel:${booking.resident?.phone}`}>{booking.resident?.phone}</a></p>
