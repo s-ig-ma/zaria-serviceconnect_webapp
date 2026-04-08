@@ -2,6 +2,10 @@ import { useState } from "react";
 import { login } from "../api/auth";
 import { saveSession } from "../lib/session";
 
+function getHomeRouteForRole(role) {
+  return role === "provider" ? "/provider" : "/resident";
+}
+
 export function LoginPage({ onNavigate, onLoggedIn }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -21,7 +25,7 @@ export function LoginPage({ onNavigate, onLoggedIn }) {
 
       saveSession(session);
       onLoggedIn(session);
-      onNavigate(session.role === "provider" ? "/provider" : "/resident");
+      onNavigate(getHomeRouteForRole(session.role));
     } catch (err) {
       setError(err.message);
     } finally {

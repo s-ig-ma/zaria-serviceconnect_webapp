@@ -4,12 +4,16 @@ export function Layout({ session, title, subtitle, onNavigate, onLogout, childre
     { label: "Home", path: "/resident" },
     { label: "Providers", path: "/resident/providers" },
     { label: "My Bookings", path: "/resident/bookings" },
+    { label: "Messages", path: "/resident/messages" },
+    { label: "Notifications", path: "/resident/notifications" },
     { label: "Profile", path: "/resident/profile" }
   ];
   const providerLinks = [
     { label: "Dashboard", path: "/provider" },
     { label: "Requests", path: "/provider/requests" },
     { label: "History", path: "/provider/history" },
+    { label: "Messages", path: "/provider/messages" },
+    { label: "Notifications", path: "/provider/notifications" },
     { label: "Profile", path: "/provider/profile" }
   ];
   const links = role === "provider" ? providerLinks : residentLinks;

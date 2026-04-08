@@ -99,9 +99,14 @@ export function ResidentProfilePage({ session, onNavigate, onLogout, onSessionUp
           </label>
         </div>
 
-        <button className="primary-button" type="submit" disabled={saving}>
-          {saving ? "Saving..." : "Save Profile"}
-        </button>
+        <div className="button-row">
+          <button className="primary-button" type="submit" disabled={saving}>
+            {saving ? "Saving..." : "Save Profile"}
+          </button>
+          <button className="ghost-button danger" type="button" onClick={onLogout}>
+            Logout
+          </button>
+        </div>
       </form>
     </Layout>
   );

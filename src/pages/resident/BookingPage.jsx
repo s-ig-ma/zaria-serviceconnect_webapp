@@ -55,7 +55,7 @@ export function BookingPage({ session, providerId, onNavigate, onLogout }) {
         service_address: form.service_address.trim(),
         notes: form.notes.trim() || null
       });
-      setMessage(`Booking #${response.id} created successfully.`);
+      setMessage("Booking request sent successfully. Your request has been sent to the provider.");
       setForm({
         service_description: "",
         scheduled_date: "",

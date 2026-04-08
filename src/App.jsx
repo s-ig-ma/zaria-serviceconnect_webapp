@@ -10,9 +10,13 @@ import { ProviderProfilePage } from "./pages/resident/ProviderProfilePage";
 import { ProvidersPage } from "./pages/resident/ProvidersPage";
 import { ResidentBookingsPage } from "./pages/resident/ResidentBookingsPage";
 import { ResidentHomePage } from "./pages/resident/ResidentHomePage";
+import { ResidentMessagesPage } from "./pages/resident/ResidentMessagesPage";
+import { ResidentNotificationsPage } from "./pages/resident/ResidentNotificationsPage";
 import { ResidentProfilePage } from "./pages/resident/ResidentProfilePage";
 import { ProviderDashboardPage } from "./pages/provider/ProviderDashboardPage";
 import { ProviderHistoryPage } from "./pages/provider/ProviderHistoryPage";
+import { ProviderMessagesPage } from "./pages/provider/ProviderMessagesPage";
+import { ProviderNotificationsPage } from "./pages/provider/ProviderNotificationsPage";
 import { ProviderProfileSettingsPage } from "./pages/provider/ProviderProfileSettingsPage";
 import { ProviderRequestsPage } from "./pages/provider/ProviderRequestsPage";
 
@@ -21,6 +25,10 @@ function getCurrentLocation() {
     pathname: window.location.pathname,
     search: window.location.search
   };
+}
+
+function getHomeRouteForRole(role) {
+  return role === "provider" ? "/provider" : "/resident";
 }
 
 export default function App() {
@@ -52,7 +60,14 @@ export default function App() {
           clearSession();
           setSession(null);
         } else {
-          setSession(saved);
+          const nextSession = { ...saved, role: profile.role, name: profile.name };
+          saveSession(nextSession);
+          setSession(nextSession);
+
+          if (["/", "/login", "/register"].includes(window.location.pathname)) {
+            window.history.replaceState({}, "", getHomeRouteForRole(profile.role));
+            setRoute(getCurrentLocation());
+          }
         }
       } catch (error) {
         clearSession();
@@ -156,6 +171,22 @@ export default function App() {
       );
     }
 
+    if (pathname === "/resident/messages") {
+      return (
+        <ProtectedRoute session={session} role="resident" onRedirect={navigate}>
+          <ResidentMessagesPage session={session} onNavigate={navigate} onLogout={logout} />
+        </ProtectedRoute>
+      );
+    }
+
+    if (pathname === "/resident/notifications") {
+      return (
+        <ProtectedRoute session={session} role="resident" onRedirect={navigate}>
+          <ResidentNotificationsPage session={session} onNavigate={navigate} onLogout={logout} />
+        </ProtectedRoute>
+      );
+    }
+
     if (pathname === "/resident/profile") {
       return (
         <ProtectedRoute session={session} role="resident" onRedirect={navigate}>
@@ -189,6 +220,22 @@ export default function App() {
       return (
         <ProtectedRoute session={session} role="provider" onRedirect={navigate}>
           <ProviderHistoryPage session={session} onNavigate={navigate} onLogout={logout} />
+        </ProtectedRoute>
+      );
+    }
+
+    if (pathname === "/provider/messages") {
+      return (
+        <ProtectedRoute session={session} role="provider" onRedirect={navigate}>
+          <ProviderMessagesPage session={session} onNavigate={navigate} onLogout={logout} />
+        </ProtectedRoute>
+      );
+    }
+
+    if (pathname === "/provider/notifications") {
+      return (
+        <ProtectedRoute session={session} role="provider" onRedirect={navigate}>
+          <ProviderNotificationsPage session={session} onNavigate={navigate} onLogout={logout} />
         </ProtectedRoute>
       );
     }
