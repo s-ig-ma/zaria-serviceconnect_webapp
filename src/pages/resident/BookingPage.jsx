@@ -3,6 +3,7 @@ import { createBooking } from "../../api/bookings";
 import { getProviderById } from "../../api/providers";
 import { getMyUserProfile } from "../../api/users";
 import { Layout } from "../../components/Layout";
+import { useIsMobileOrTablet } from "../../lib/device";
 import { getDisplayServiceName } from "../../lib/utils";
 
 export function BookingPage({ session, providerId, onNavigate, onLogout }) {
@@ -18,6 +19,7 @@ export function BookingPage({ session, providerId, onNavigate, onLogout }) {
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const isMobileOrTablet = useIsMobileOrTablet();
 
   useEffect(() => {
     async function loadProvider() {
@@ -88,9 +90,13 @@ export function BookingPage({ session, providerId, onNavigate, onLogout }) {
               <p>{getDisplayServiceName(provider)}</p>
               <p className="muted">{provider.location || "Location not set"}</p>
               <p className="muted">Availability: {provider.availability_status || "available"}</p>
-              <a className="inline-link" href={`tel:${provider.user?.phone}`}>
-                Call: {provider.user?.phone}
-              </a>
+              {isMobileOrTablet ? (
+                <a className="inline-link" href={`tel:${provider.user?.phone}`}>
+                  Call: {provider.user?.phone}
+                </a>
+              ) : (
+                <p className="muted">Phone: {provider.user?.phone}</p>
+              )}
             </>
           ) : null}
         </div>

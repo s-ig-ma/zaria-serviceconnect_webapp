@@ -3,6 +3,7 @@ import { getResidentBookings, updateBookingStatus } from "../../api/bookings";
 import { getMyComplaints, submitComplaint } from "../../api/complaints";
 import { getProviderReviews, submitReview } from "../../api/reviews";
 import { Layout } from "../../components/Layout";
+import { useIsMobileOrTablet } from "../../lib/device";
 import { StatusBadge } from "../../components/StatusBadge";
 import { formatDateTime, getDisplayServiceName } from "../../lib/utils";
 
@@ -15,6 +16,7 @@ export function ResidentBookingsPage({ session, onNavigate, onLogout }) {
   const [error, setError] = useState("");
   const [activeReview, setActiveReview] = useState({});
   const [activeComplaint, setActiveComplaint] = useState({});
+  const isMobileOrTablet = useIsMobileOrTablet();
 
   async function loadData() {
     try {
@@ -150,7 +152,14 @@ export function ResidentBookingsPage({ session, onNavigate, onLogout }) {
                   <p><strong>Service Address:</strong> {booking.service_address || "No address saved."}</p>
                   <p><strong>Notes:</strong> {booking.notes || "No note added."}</p>
                   <p><strong>Provider Note:</strong> {booking.provider_notes || "No provider note yet."}</p>
-                  <p><strong>Call:</strong> <a href={`tel:${provider?.user?.phone}`}>{provider?.user?.phone}</a></p>
+                  <p>
+                    <strong>Phone:</strong>{" "}
+                    {isMobileOrTablet ? (
+                      <a href={`tel:${provider?.user?.phone}`}>{provider?.user?.phone}</a>
+                    ) : (
+                      <span>{provider?.user?.phone}</span>
+                    )}
+                  </p>
                 </div>
 
                 <div className="button-row">

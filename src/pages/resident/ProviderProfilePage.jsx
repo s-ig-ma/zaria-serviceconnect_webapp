@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getProviderById } from "../../api/providers";
 import { getProviderReviews } from "../../api/reviews";
 import { Layout } from "../../components/Layout";
+import { useIsMobileOrTablet } from "../../lib/device";
 import { StatusBadge } from "../../components/StatusBadge";
 import { getImageUrl } from "../../lib/images";
 import { formatDateLabel, getDisplayServiceName, getInitials } from "../../lib/utils";
@@ -11,6 +12,7 @@ export function ProviderProfilePage({ session, providerId, onNavigate, onLogout 
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const isMobileOrTablet = useIsMobileOrTablet();
   const imageUrl = getImageUrl(provider?.user?.profile_photo);
 
   useEffect(() => {
@@ -67,7 +69,14 @@ export function ProviderProfilePage({ session, providerId, onNavigate, onLogout 
             </div>
 
             <div className="detail-list">
-              <p><strong>Phone:</strong> <a href={`tel:${provider.user?.phone}`}>{provider.user?.phone}</a></p>
+              <p>
+                <strong>Phone:</strong>{" "}
+                {isMobileOrTablet ? (
+                  <a href={`tel:${provider.user?.phone}`}>{provider.user?.phone}</a>
+                ) : (
+                  <span>{provider.user?.phone}</span>
+                )}
+              </p>
               <p><strong>Location:</strong> {provider.location || "Not set"}</p>
               <p><strong>Experience:</strong> {provider.years_of_experience} years</p>
               <p><strong>Description:</strong> {provider.description || "No description yet."}</p>
@@ -80,9 +89,11 @@ export function ProviderProfilePage({ session, providerId, onNavigate, onLogout 
               >
                 Book This Provider
               </button>
-              <a className="ghost-button link-button" href={`tel:${provider.user?.phone}`}>
-                Call Provider
-              </a>
+              {isMobileOrTablet ? (
+                <a className="ghost-button link-button" href={`tel:${provider.user?.phone}`}>
+                  Call Provider
+                </a>
+              ) : null}
             </div>
           </div>
 
