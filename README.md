@@ -1,174 +1,171 @@
-# Zaria ServiceConnect Admin Dashboard
+# Zaria ServiceConnect Web App
 
-This is the React admin dashboard for managing Zaria ServiceConnect.
+This is the React web application for residents and providers.
 
-The admin dashboard is a control panel. It is not for normal residents or providers. It is for admin users who monitor the system and handle important decisions.
+React is a JavaScript tool for building user interfaces. A user interface means the screens, buttons, forms, and pages that people interact with.
 
-## Why The Admin Dashboard Is Important
+## What The Web App Is Used For
 
-The system needs admin control because providers should not automatically become visible to residents without review.
+The web app allows users to access Zaria ServiceConnect from a browser.
 
-Admin helps protect the platform by:
+It has two main views:
 
-- Reviewing provider registrations.
-- Approving trustworthy providers.
-- Rejecting or suspending providers when needed.
-- Checking bookings.
-- Resolving complaints.
-- Activating or deactivating user accounts.
+- Resident view: for people who need services.
+- Provider view: for skilled workers who offer services.
 
-Without the admin dashboard, the system would have less control and less trust.
+The app connects to the backend at:
+
+```text
+https://zaria-serviceconnect-backend-production.up.railway.app
+```
+
+That backend address is stored in `src/config.js`.
+
+## Resident View
+
+Residents can:
+
+- Register and login.
+- Browse service categories.
+- Search for providers.
+- View provider profiles.
+- Create bookings.
+- Track booking status.
+- Confirm job completion.
+- Submit reviews.
+- Submit complaints.
+- View complaint messages with admin.
+- View notifications.
+- Update their profile and home address.
+
+## Provider View
+
+Providers can:
+
+- Register with service details and verification documents.
+- Login after registration.
+- Wait for admin approval.
+- View booking requests.
+- Accept or decline bookings.
+- Request job completion.
+- Update availability as available, busy, or offline.
+- Update provider profile.
+- View complaint messages with admin.
+- View notifications.
 
 ## How It Connects To The Backend
 
-The dashboard sends requests to the same FastAPI backend used by the web app and Android app.
+The web app uses `fetch`, which is a browser function for sending internet requests.
 
-The backend URL is stored in:
-
-```text
-src/config.js
-```
-
-The API functions are in:
+The shared request helper is in:
 
 ```text
-src/api.js
+src/api/client.js
 ```
 
-After admin login, the backend returns a token. The dashboard sends that token with protected admin requests.
+That helper does three important things:
 
-## Main Admin Sections
+1. It adds the backend URL before every endpoint.
+2. It attaches the login token when the user is logged in.
+3. It reads backend errors and shows useful messages.
 
-The dashboard has four main tabs:
+A token is like a temporary pass. After login, the backend gives the app a token. The app sends that token with protected requests so the backend knows who is making the request.
 
-- Providers.
-- Bookings.
-- Complaints.
-- Users.
+## How User Actions Trigger Backend Requests
 
-## What Admin Can Do
-
-### View And Approve Providers
-
-Admin can view provider details such as:
-
-- Name.
-- Email.
-- Phone.
-- Service.
-- Location.
-- Shop address.
-- Years of experience.
-- Verification documents.
-- Availability status.
-
-Admin can change provider status to:
-
-- `approved`: provider becomes visible to residents.
-- `rejected`: provider is not accepted.
-- `suspended`: provider is blocked from normal provider activity.
-
-### View Bookings
-
-Admin can see bookings between residents and providers.
-
-This helps admin understand what is happening in the system and investigate complaints.
-
-### View And Resolve Complaints
-
-Admin can:
-
-- View all complaints.
-- Open a complaint.
-- Read complaint details.
-- Change complaint status.
-- Add a resolution note.
-- Chat with the resident.
-- Chat with the provider.
-- Record complaint actions.
-
-Complaint statuses:
-
-- `open`: complaint has been submitted.
-- `in_review`: admin is checking it.
-- `resolved`: admin has finished handling it.
-
-Complaint actions:
-
-- `warning`: admin records a warning.
-- `provider_suspension`: admin suspends a provider.
-- `account_deactivation`: admin deactivates a user.
-- `note`: admin records a simple note.
-
-### View And Manage Users
-
-Admin can view all users and see details such as:
-
-- Name.
-- Email.
-- Phone.
-- Role.
-- Location.
-- Active or inactive status.
-- Provider profile if the user is a provider.
-
-Admin can activate or deactivate accounts.
-
-## How Admin Actions Work Behind The Scenes
-
-Example: approving a provider.
+Example: resident searches for a provider.
 
 ```text
-Admin clicks "Approve"
+Resident types "electrician"
         |
         v
-Dashboard sends PATCH /providers/{provider_id}/status
+Web app calls searchProviders()
         |
         v
-Backend checks that the logged-in user is admin
+searchProviders() sends GET /providers/search?q=electrician
         |
         v
-Backend changes provider status in SQLite
+Backend returns matching providers
         |
         v
-Provider becomes visible to residents
+Web app displays provider cards
 ```
 
-Example: resolving a complaint.
+Example: resident books a provider.
 
 ```text
-Admin updates complaint status and note
+Resident fills booking form
         |
         v
-Dashboard sends PUT /complaints/{complaint_id}/resolve
+Web app calls createBooking()
         |
         v
-Backend saves the status and resolution note
+Backend checks rules and saves booking
         |
         v
-Backend creates notifications for the parties
+Web app shows the booking in booking history
 ```
 
-## Important Files
+## Main API Files
 
-- `src/App.jsx`: main dashboard screens and tab logic.
-- `src/api.js`: all backend requests.
-- `src/auth.js`: saving and clearing admin login session.
-- `src/config.js`: backend URL.
+- `src/api/auth.js`: login, resident registration, provider registration.
+- `src/api/providers.js`: categories, provider list, provider search, provider profile.
+- `src/api/bookings.js`: create booking, get bookings, update booking status, update availability.
+- `src/api/complaints.js`: submit complaint and load personal complaints.
+- `src/api/messages.js`: complaint message conversations.
+- `src/api/notifications.js`: view and mark notifications as read.
+- `src/api/reviews.js`: submit and view reviews.
+- `src/api/users.js`: user profile update.
+
+## Important Pages
+
+- `src/pages/LoginPage.jsx`: user login.
+- `src/pages/RegisterPage.jsx`: resident and provider registration.
+- `src/pages/resident/ProvidersPage.jsx`: provider search and browsing.
+- `src/pages/resident/BookingPage.jsx`: booking form.
+- `src/pages/resident/ResidentBookingsPage.jsx`: booking history, completion, reviews, complaints.
+- `src/pages/provider/ProviderRequestsPage.jsx`: provider booking requests.
+- `src/pages/provider/ProviderProfileSettingsPage.jsx`: provider profile and availability.
+
+## Key Features In Simple English
+
+### Search Providers
+
+The resident searches by typing a service or provider name. The app sends the search text to the backend. The backend returns approved providers that match.
+
+### Booking
+
+The resident chooses a provider and submits booking details. The backend saves the booking. The provider later accepts or declines it.
+
+### Profile
+
+Residents and providers can update personal details. Providers can update service details and verification files.
+
+### Complaints
+
+Residents can complain about a booking. The complaint is sent to the backend and becomes visible to admin.
+
+### Notifications
+
+The app loads notifications from the backend, such as booking updates, complaint updates, and messages.
 
 ## How To Run Locally
 
-From the `admin-dashboard` folder:
+From the `web-app` folder:
 
 ```bash
 npm install
 npm run dev
 ```
 
-Then open the local Vite address shown in the terminal.
+Then open the local Vite address shown in the terminal, usually:
+
+```text
+http://localhost:5173
+```
 
 ## Defense Explanation
 
 You can say:
 
-"The admin dashboard is the management side of the system. Admin uses it to approve providers, view bookings, manage users, and resolve complaints. It talks to the same FastAPI backend, but the backend only allows admin users to access admin endpoints."
+"The web app is the browser interface for residents and providers. It does not directly touch the database. When a user clicks a button, the web app sends an API request to the FastAPI backend. The backend checks the request, updates the database if needed, and returns a response that the web app displays."
