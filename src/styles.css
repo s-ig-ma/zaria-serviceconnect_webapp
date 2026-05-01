@@ -708,6 +708,152 @@ textarea {
   }
 }
 
+@media (max-width: 1024px) {
+  .landing-hero,
+  .hero-bar,
+  .page-nav,
+  .page-body {
+    max-width: 100%;
+  }
+
+  .cards-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    overflow-x: hidden;
+  }
+
+  .landing-copy,
+  .hero-copy,
+  .panel,
+  .provider-card,
+  .booking-card,
+  .review-card,
+  .message-stage,
+  .message-sidebar,
+  .message-composer,
+  .message-bubble,
+  .demo-card,
+  .summary-card {
+    min-width: 0;
+  }
+
+  .landing-page,
+  .shell,
+  .auth-shell {
+    padding: 14px;
+  }
+
+  .landing-hero {
+    gap: 18px;
+  }
+
+  .landing-copy h1,
+  .auth-card h1,
+  .hero-copy h1 {
+    font-size: 2rem;
+    line-height: 1.12;
+  }
+
+  .hero-bar {
+    gap: 16px;
+  }
+
+  .hero-actions,
+  .user-pill,
+  .toolbar label,
+  .primary-button,
+  .ghost-button,
+  .segment,
+  .category-card,
+  .link-button {
+    width: 100%;
+  }
+
+  .page-nav {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 0 0 12px;
+    scrollbar-width: none;
+  }
+
+  .page-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nav-link {
+    flex: 0 0 auto;
+    padding: 10px 14px;
+    white-space: nowrap;
+  }
+
+  .button-row,
+  .landing-actions,
+  .segmented,
+  .toolbar,
+  .provider-meta {
+    align-items: stretch;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .section-title,
+  .booking-head,
+  .provider-card-header,
+  .review-head,
+  .profile-head,
+  .message-stage-header,
+  .message-bubble-head,
+  .composer-head {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .profile-head,
+  .provider-card-header {
+    text-align: left;
+  }
+
+  .cards-grid,
+  .category-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-grid {
+    gap: 12px;
+  }
+
+  .message-sidebar,
+  .message-stage {
+    min-height: auto;
+  }
+
+  .message-thread {
+    min-height: 260px;
+    max-height: 58vh;
+    padding-right: 0;
+  }
+
+  .message-stage-badge {
+    align-self: flex-start;
+  }
+
+  input,
+  select,
+  textarea {
+    min-width: 0;
+  }
+
+  .checkbox-row {
+    align-items: flex-start;
+    flex-direction: row;
+  }
+}
+
 @media (max-width: 640px) {
   .landing-page,
   .shell,
@@ -721,5 +867,45 @@ textarea {
   .hero-bar {
     padding: 20px;
     border-radius: 22px;
+  }
+}
+
+@media (max-width: 480px) {
+  .landing-page,
+  .shell,
+  .auth-shell {
+    padding: 12px;
+  }
+
+  .landing-hero,
+  .panel,
+  .auth-card,
+  .hero-bar,
+  .demo-card,
+  .provider-card,
+  .booking-card,
+  .review-card {
+    padding: 16px;
+    border-radius: 18px;
+  }
+
+  .landing-copy h1,
+  .auth-card h1,
+  .hero-copy h1 {
+    font-size: 1.75rem;
+  }
+
+  .panel h2,
+  .message-stage-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .avatar.large {
+    width: 64px;
+    height: 64px;
+  }
+
+  .empty-state {
+    padding: 24px 8px;
   }
 }
