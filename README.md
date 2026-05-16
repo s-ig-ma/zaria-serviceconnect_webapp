@@ -164,8 +164,3 @@ Then open the local Vite address shown in the terminal, usually:
 http://localhost:5173
 ```
 
-## Defense Explanation
-
-You can say:
-
-"The web app is the browser interface for residents and providers. It does not directly touch the database. When a user clicks a button, the web app sends an API request to the FastAPI backend. The backend checks the request, updates the database if needed, and returns a response that the web app displays."
